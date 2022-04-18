@@ -17,7 +17,7 @@ int main() {
   char commandinput[7];
   //Main loop
   while(running == true){
-    cout << "Please enter your input. Enter ADD to add a number to the heap, PRINT to print the heap, FILE to load a heap from the file, DELETE to delete the heap, and QUIT to end the program." << endl;
+    cout << "Please enter your input. Enter ADD to add a number to the tree, PRINT to print the tree, FILE to load a tree from the file, DELETE to delete the tree, and QUIT to end the program." << endl;
     cin >> commandinput;
     if(strcmp(commandinput, "ADD") == 0) {
        cout << "Insert number" << endl;
@@ -146,7 +146,7 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
   if(head == NULL) {
     cout << "The tree is empty!" << endl;
   }
-  
+  //cout << "OTB" << endl;
   if(current != NULL) {
     if(current->getData() == data) {
       if(current->getLeft() == NULL && current->getRight() == NULL) {
@@ -165,6 +165,7 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
 	}
       }
       else if(current->getLeft() == NULL) {
+        //cout << "LEFT" << endl;
 	if(current == head) {
 	  Node* temp = head;
 	  head = head->getRight();
@@ -182,9 +183,10 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
 	}
       }
       else if(current->getRight() == NULL) {
+        //cout << "RIGHT" << endl;
 	if(current == head) {
 	  Node* temp = head;
-	  head = head->getRight();
+	  head = head->getLeft();
 	  delete temp;
 	}
 	else if(parent->getLeft() == current) {
@@ -199,16 +201,48 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
 	}
       }
       else {
-	
+	Node* inorder = current->getRight();
+	Node* orderparent = current;
+	while(inorder->getLeft() != NULL) {
+          orderparent = inorder;
+	  inorder = inorder->getLeft();
+	}
+	int newdata = inorder->getData();
+	int deletedata = current->getData();
+	//cout << "The curret data is:" << deletedata << endl;
+	inorder->setData(current->getData());
+	current->setData(newdata);
+	if(inorder->getLeft() == NULL && inorder->getRight() == NULL) {
+          if(orderparent->getLeft() == inorder) {
+	    orderparent->setLeft(NULL);
+	  }
+	  else {
+            orderparent->setRight(NULL);
+	  }
+	  Node* temp = inorder;
+	  delete temp;
+	}
+	else if(inorder->getRight() == NULL) {
+          Node* temp = inorder;
+	  
+	  orderparent->setLeft(inorder->getLeft());
+	  delete temp;
+	}
+	else {
+	  Node* temp = inorder;
+	  orderparent->setRight(inorder->getRight());
+	  delete temp;
+	}
       }
     }
     else if(current->getData() > data) {
       parent = current;
+      //cout << "GOING LEFT" << endl;
       deleteTree(head, current->getLeft(), parent, data);
-      
     }
     else {
       parent = current;
+      //cout << "GOING RIGHT" << endl;
       deleteTree(head, current->getRight(), parent, data);
     }
   }
