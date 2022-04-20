@@ -26,7 +26,7 @@ int main() {
        addTree(treehead, treehead, newnode);
     }
     else if (strcmp(commandinput, "PRINT") == 0) {
-      printFormat(treehead, 1);
+      printFormat(treehead, 3);
     }
     else if (strcmp(commandinput, "SEARCH") == 0) {
       cout << "Enter the number you would like to search for: " << endl;
@@ -38,10 +38,10 @@ int main() {
       fstream File;
       int fileinput = 0;
       File.open("File.txt");
-      for(int i = 0; i < 100; i++) {
+      for(int i = 0; i <100; i++) {
 	File >> fileinput;
 	Node* newnode = new Node(fileinput);
-	//addHeap(newnode, treehead, heaparray, sizecount);
+	addTree(treehead, treehead, newnode);
       }
     }
     else if (strcmp(commandinput, "DELETE") == 0) {
@@ -59,10 +59,12 @@ int main() {
   return 0;
 }
 void addTree(Node* & head, Node* current, Node* newnode) {
+  //Sets the new node as head if the tree is empty
   if(head == NULL) {
     head = newnode;
     return;
   }
+  //Uses the value of the data to determine where it goes in the tree (DOES NOT ACCOUNT FOR DUPLICATES)
   else {
     if(newnode->getData() > current->getData()) {
       if(current->getRight() == NULL) {
@@ -99,10 +101,11 @@ void addTree(Node* & head, Node* current, Node* newnode) {
   
 }
 void printFormat(Node* head, int space) {
+  //Same print function from heap
   if (head == NULL) {
     return;
   }
-    space = space + 10;
+    space = space + 5;
     if(head->getRight() != NULL) {
       
     printFormat(head->getRight(), space);
@@ -118,6 +121,8 @@ void printFormat(Node* head, int space) {
     }
 }
 void searchTree(Node* current, int data) {
+  //Goes through the tree, implementation is a little bit messy
+  //The while loop here could just be a recursive call
   while(current->getData() != data && current != NULL) {
     if(current != NULL) {
       if(current->getData() > data) {
@@ -143,14 +148,16 @@ void searchTree(Node* current, int data) {
 
 
 void deleteTree(Node* & head, Node* current, Node* parent, int data) {
+  //Could use a bit more recursion on the two child case
   if(head == NULL) {
     cout << "The tree is empty!" << endl;
   }
-  //cout << "OTB" << endl;
+  //Checks for three cases: one child, two children, no children
+  //Parent is needed because just calling the destructor was not working
   if(current != NULL) {
     if(current->getData() == data) {
+      //No children case
       if(current->getLeft() == NULL && current->getRight() == NULL) {
-        //cout << "Delete attempted!" << endl;
 	if(current == head) {
           delete head;
 	  head = NULL;
@@ -164,8 +171,8 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
 	  delete current;
 	}
       }
+      //Only right child present case
       else if(current->getLeft() == NULL) {
-        //cout << "LEFT" << endl;
 	if(current == head) {
 	  Node* temp = head;
 	  head = head->getRight();
@@ -182,6 +189,7 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
 	  delete temp;
 	}
       }
+      //Only left child present case
       else if(current->getRight() == NULL) {
         //cout << "RIGHT" << endl;
 	if(current == head) {
@@ -200,7 +208,9 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
 	  delete temp;
 	}
       }
+      //Two children case
       else {
+	//Swaps the current node and its inorder successor
 	Node* inorder = current->getRight();
 	Node* orderparent = current;
 	while(inorder->getLeft() != NULL) {
@@ -209,9 +219,9 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
 	}
 	int newdata = inorder->getData();
 	int deletedata = current->getData();
-	//cout << "The curret data is:" << deletedata << endl;
 	inorder->setData(current->getData());
 	current->setData(newdata);
+	//This should be a recursive call but it wasn't working so I just copied the code
 	if(inorder->getLeft() == NULL && inorder->getRight() == NULL) {
           if(orderparent->getLeft() == inorder) {
 	    orderparent->setLeft(NULL);
@@ -235,34 +245,14 @@ void deleteTree(Node* & head, Node* current, Node* parent, int data) {
 	}
       }
     }
+    //Same as in print, navigates through the tree
     else if(current->getData() > data) {
       parent = current;
-      //cout << "GOING LEFT" << endl;
       deleteTree(head, current->getLeft(), parent, data);
     }
     else {
       parent = current;
-      //cout << "GOING RIGHT" << endl;
       deleteTree(head, current->getRight(), parent, data);
     }
   }
-    
-  
-  
-  /*
-  if(data < head->getData()) {
-    deleteTree(head->getLeft(), data);
-  }
-  else if (data > head->getData()) {
-    deleteTree(head->getRight(), data);
-  }
-  
-  else {
-    if(head->getLeft() == NULL && head->getRight() == NULL) {
-      Node* temp = head;
-      head = NULL;
-      delete temp;
-    }
-  }
-  */
 }
