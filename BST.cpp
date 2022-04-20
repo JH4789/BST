@@ -1,3 +1,8 @@
+/*
+Name: Jayden Huang
+Date: 4/20/2022
+Project: Binary Search Tree, with file load capabilities.
+*/
 #include <iostream>
 #include "Node.h"
 #include <cstring>
@@ -17,7 +22,7 @@ int main() {
   char commandinput[7];
   //Main loop
   while(running == true){
-    cout << "Please enter your input. Enter ADD to add a number to the tree, PRINT to print the tree, FILE to load a tree from the file, DELETE to delete the tree, and QUIT to end the program." << endl;
+    cout << "Please enter your input. Enter ADD to add a number to the tree, PRINT to print the tree, SEARCH to search the tree for a number, FILE to load a tree from the file, DELETE to delete the tree, and QUIT to end the program." << endl;
     cin >> commandinput;
     if(strcmp(commandinput, "ADD") == 0) {
        cout << "Insert number" << endl;
